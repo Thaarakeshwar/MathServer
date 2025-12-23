@@ -1,4 +1,4 @@
-# Ex.05 Design a Website for Server Side Processing
+# Ex.04 Design a Website for Server Side Processing
 ## Date:
 
 ## AIM:
@@ -32,12 +32,128 @@ Create a HTML file to implement form based input and output.
 Publish the website in the given URL.
 
 ## PROGRAM :
+```
+math.html
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Power Calculator</title>
+    <style>
+        body {
+    background-color: red;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.container {
+    background-color: blue;
+    border: 5px dashed green;
+    width: 400px;
+    padding: 30px;
+    margin: 100px auto;
+    color: white;
+    border-radius: 10px;
+}
+
+h1 {
+    color: pink;
+}
+
+input[type="text"] {
+    width: 100px;
+    padding: 5px;
+    margin-left: 10px;
+}
+
+input[type="submit"] {
+    padding: 5px 15px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+input[type="submit"]:hover {
+    background-color: lightgray;
+}
+
+    </style>
+</head>
+<body>
+    <h1>Incandescent Bulb Power Calculator</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="current">Current (I) in Amps:</label>
+        <input type="text" id="current" name="current" required><br><br>
+
+        <label for="resistance">Resistance (R) in Ohms:</label>
+        <input type="text" id="resistance" name="resistance" required><br><br>
+
+        <input type="submit" value="Calculate Power">
+    </form>
+
+    {% if result is not None %}
+        <h2>Power (P) = {{ result }} Watts</h2>
+    {% endif %}
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+</body>
+</html>
+
+
+view.py 
+
+from django.shortcuts import render
+
+def calculate_power(request):
+    result = None
+    error = None
+
+    if request.method == 'POST':
+        try:
+            current = float(request.POST.get('current'))
+            resistance = float(request.POST.get('resistance'))
+            power = (current ** 2) * resistance
+            result = round(power, 2)
+        except (ValueError, TypeError):
+            error = "Invalid input. Please enter valid numbers."
+
+    return render(request, 'mathapp/math.html', {'result': result, 'error': error})
+
+
+ragul/urls.py
+
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('mathapp.urls')),
+]
+
+
+mathapp/urls.py
+
+
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.calculate_power, name='calculate_power'),
+]
+```
 
 
 ## SERVER SIDE PROCESSING:
+<img width="1392" height="521" alt="Screenshot (54)" src="https://github.com/user-attachments/assets/6816ccb8-fa95-4779-bc3b-767e164c179f" />
 
 
 ## HOMEPAGE:
+<img width="1472" height="753" alt="Screenshot (55)" src="https://github.com/user-attachments/assets/ca4643e5-f93e-4a04-bcac-c02ca0ec0055" />
 
 
 ## RESULT:
